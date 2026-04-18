@@ -1,7 +1,7 @@
 // app/dashboard/DashboardClient.tsx
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -18,6 +18,7 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, Eye, ThumbsUp } from "lucide-react";
 import { Decision, DecisionStatus, RepoResponse } from "@/lib/api";
 import ConnectRepoModal from "@/components/repos/ConnectRepoModal";
+import DecisionCardSkeleton from "@/components/decisions/DecisionCardSkeleton";
 
 interface UserProfile {
   id: string;
@@ -42,6 +43,12 @@ export default function DashboardClient({
 }: DashboardClientProps) {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [recentDecisions, setRecentDecisions] = useState<Decision[]>(initialDecisions);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Set loading to false after initial render
+    setIsLoading(false);
+  }, []);
 
   const handleRepoConnected = useCallback((repo: RepoResponse) => {
     // Could refresh the page or update state
@@ -106,11 +113,21 @@ export default function DashboardClient({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recentDecisions.map((decision) => (
-                <DecisionCard key={decision.id} decision={decision} />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="p-6 bg-white border border-gray-200 rounded-lg">
+                    <DecisionCardSkeleton />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recentDecisions.map((decision) => (
+                  <DecisionCard key={decision.id} decision={decision} />
+                ))}
+              </div>
+            )}
           </section>
         )}
 
