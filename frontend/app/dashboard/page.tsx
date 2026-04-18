@@ -73,12 +73,12 @@ export default async function DashboardPage() {
   const token = cookieStore.get(TOKEN_COOKIE)?.value;
 
   if (!token) {
-    redirect("/");
+    redirect("/?error=expired");
   }
 
   const user = await fetchCurrentUser(token);
   if (!user) {
-    redirect("/");
+    redirect("/?error=fetch_failed");
   }
 
   const [recentDecisions, hasRepos] = await Promise.all([
