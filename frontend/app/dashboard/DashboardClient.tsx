@@ -1,6 +1,6 @@
 // app/dashboard/DashboardClient.tsx
 "use client";
-
+import DecisionCardSkeleton from "./DecisionCardSkeleton";
 import { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,12 +42,21 @@ export default function DashboardClient({
 }: DashboardClientProps) {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [recentDecisions, setRecentDecisions] = useState<Decision[]>(initialDecisions);
-
+  const isLoading = !recentDecisions || recentDecisions.length === 0;
   const handleRepoConnected = useCallback((repo: RepoResponse) => {
     // Could refresh the page or update state
     window.location.reload();
   }, []);
 
+  if (isLoading) {
+  return (
+    <div className="space-y-4 p-4">
+      {[...Array(4)].map((_, i) => (
+        <DecisionCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
   return (
     <div className="min-h-screen bg-slate-50">
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
