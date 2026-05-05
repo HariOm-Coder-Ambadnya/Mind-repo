@@ -2,6 +2,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
+import { Toaster } from "react-hot-toast";
+import ToastObserver from "@/components/ToastObserver";
 
 export const metadata: Metadata = {
   title: "MindRepo — GitHub for thinking, not just code",
@@ -20,6 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+        <Toaster position="top-right" />
+        <ToastObserver />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
